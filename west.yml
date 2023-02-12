@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: Apache-2.0
+# West YAML manifest for Zephyr as Xen Dom0
+
+manifest:
+  self:
+    path: zephyr-dom0-xt
+
+  remotes:
+    - name: firscity
+      url-base: https://github.com/firscity/
+    - name: lorc
+      url-base: https://github.com/lorc/
+
+  projects:
+    - name: zephyr
+      remote: firscity
+      revision: zephyr_aos_porting
+      west-commands: scripts/west-commands.yml
+    - name: zephyr-xenlib
+      remote: lorc
+      revision: initial
