@@ -374,6 +374,11 @@ static uint32_t domd_irqs[] = {
 			185,
 };
 
+extern char __img_domd_start[];
+extern char __img_domd_end[];
+extern char __dtb_domd_start[];
+extern char __dtb_domd_end[];
+
 struct xen_domain_cfg domd_cfg = {
 	.mem_kb = 16384,
 
@@ -394,4 +399,10 @@ struct xen_domain_cfg domd_cfg = {
 
 	.dtdevs = domd_dtdevs,
 	.nr_dtdevs = 0,
+
+	.img_start = __img_domd_start,
+	.img_end = __img_domd_end,
+
+	.dtb_start = __dtb_domd_start,
+	.dtb_end = __dtb_domd_end,
 };
