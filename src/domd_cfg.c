@@ -7,6 +7,8 @@
 #include <domain.h>
 #include <zephyr/xen/public/domctl.h>
 
+#include <string.h>
+
 static char *domd_dtdevs[] = {
 	    "/soc/dma-controller@e6460000",
 	    "/soc/dma-controller@e6470000",
