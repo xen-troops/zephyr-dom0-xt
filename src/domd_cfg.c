@@ -413,7 +413,7 @@ struct xen_domain_cfg domd_cfg = {
 	.irqs = domd_irqs,
 	.nr_irqs = 0,
 
-	.gic_version = XEN_DOMCTL_CONFIG_GIC_V2,
+	.gic_version = XEN_DOMCTL_CONFIG_GIC_V3,
 	.tee_type = XEN_DOMCTL_CONFIG_TEE_NONE,
 
 	.dtdevs = domd_dtdevs,
