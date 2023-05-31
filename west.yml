@@ -12,8 +12,8 @@ manifest:
   projects:
     - name: zephyr
       remote: xentroops
-      revision: aos-wip
+      revision: zephyr-v3.3.0-xt
       west-commands: scripts/west-commands.yml
     - name: zephyr-xenlib
       remote: xentroops
-      revision: wip_zephyr_dom0
+      revision: main
