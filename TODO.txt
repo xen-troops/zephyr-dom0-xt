@@ -1,0 +1,57 @@
+This project is meant to be used as Zephyr Dom0 application for xentroops
+proddevel.
+
+Currently Zephyr Dom0 approach is already used in AoS product, but it has
+some configuration differences with proddevel: it uses dedicated
+application "aos_core_zephyr", this application has access to real
+hardware (e.g. MMC) and has real file storage in Dom0.
+
+In proddevel (with Linux Dom0) we use thin-Dom0 concept, so all hardware
+is passed to driver domain (DomD) and Dom0 works only with domain
+configurations (xl). As storage Linux Dom0 uses thin-initramfs, which is
+loaded and placed in RAM by U-boot (at Xen load time). This initramfs
+contains all required scripts, configuration, services and domain files
+(xl.conf, binaries, dtbs).
+
+Thus, in Zephyr Dom0 we need to decide what should be used for this
+purpose. Here are some of the options:
+1. Same as AoS, use dedicated bootloader for all domain and have compiled
+  domain configuration inside.
+2. Same as proddevel, prepare initramfs image with DomD/DomU binaries and
+  configuration. In such configuration Zephyr should have configuration
+  parser (e.g. JSON) and will be able to load Linux for DomD/DomU directly.
+  This will slightly decrease a boottime.
+3. (less desirable) link everything as Zephyr Dom0 sections and rebuild
+  Zephyr on every change.
+
+In case of using initramfs for Zephyr Dom0 we need to complete following
+activities:
+1. Check if Zephyr OS is capable to use pre-defined part of RAM with
+  file content as storage. Also, we need to check if this address is
+  configurable and does not change from boot to boot (this happens in
+  Xen - it checks address of Dom0 ramdisk provided in dtb and loaded by
+  U-boot, then relocates it to some memory address before Dom0 start).
+2. Decide which domain configuration format we will use - JSON, XML or
+  even some custom serialization/deserialization in this application.
+3. What binaries will be stored on initramfs - one common loader for all
+  domains, or just images for DomD/DomU (Linux).
+4. Device tree blobs - should they be partial as now and get augumented
+  by libfdt from zephyr-xenlib, or be fully generated on build time by
+  some script (according to domain configuration) and contain CPU, memory
+  nodes etc.
+
+-------------------------------------------------------------------------
+DomD in Zephyr Dom0 may works same as in proddevel now and will work in
+all of the mentioned configuration, because it has access to real HW
+(UFS/SD card/Network). So, it can mount rootfs using different options.
+
+Meanwhile, DomU load in Zephyr Dom0 is not implemented yet. During
+development we will face rootfs issue for it. There are 2 options too:
+1. Same as proddevel - wait until DomD network or blkback driver will be
+enabled and ready for connection -> send signal to Zephyr Dom0 -> start
+DomU.
+2. Start DomU ASAP and wait for connection in frontend driver (if possible).
+Both options require additional investigation and development and are common
+for AoS and future Zephyr-based proddevel.
+
+*** This list will be extended during review ***
