@@ -1,0 +1,18 @@
+# Copyright (c) 2024 EPAM Systems
+# SPDX-License-Identifier: Apache-2.0
+
+description: Xen DomU IO memory node
+compatible: "xen,domu-iomem"
+
+include: base.yaml
+
+properties:
+  "#iomem-cells":
+    type: int
+    required: true
+    const: 3
+
+iomem-cells:
+  - first_mfn
+  - nr_mfns
+  - first_gfn

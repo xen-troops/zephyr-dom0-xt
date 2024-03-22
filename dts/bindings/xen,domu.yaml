@@ -1,0 +1,89 @@
+# Copyright (c) 2024 EPAM Systems
+# SPDX-License-Identifier: Apache-2.0
+
+description: Xen DomU configuration
+compatible: "xen,domu"
+
+include: base.yaml
+
+properties:
+  reg:
+    required: true
+    description: Domain ID
+
+  machine_dt_compat:
+    type: string
+    required: true
+
+  mem_size:
+    type: int
+    default: 0x8000000 # by default 128M
+    description: Size of the RAM given to domain
+
+  max_evtchns:
+    type: int
+    default: 10
+
+  max_vcpus:
+    type: int
+    default: 1
+
+  gnt_frames:
+    type: int
+    default: 32
+
+  max_maptrack_frames:
+    type: int
+    default: 1
+
+  gic_version:
+    type: int
+    enum:
+      - 0 # GIC Native
+      - 1 # GICv2
+      - 2 # GICv3
+    default: 1
+
+  cmdline:
+    type: string
+    default: "root=/dev/xvda rw rootwait console=hvc0"
+
+  tee:
+    type: int
+    enum:
+      - 0 # None
+      - 1 # OP-TEE
+    default: 0
+
+  domu-irqs:
+    type: array
+    description: |
+      Allow a guest to access specific physical IRQs.
+      It is recommended to only use this option for trusted VMs under administrator's control.
+
+  iomems:
+    type: phandle-array
+    description: |
+      Allow auto-translated domains to access specific hardware I/O memory pages.
+      This array has the next format: <IOMEM_START, NUM_PAGES, GFN>.
+
+      IOMEM_START is a physical page number. NUM_PAGES is the number of pages, beginning
+      with START_PAGE, to allow access to. GFN specifies the guest frame number where the
+      mapping will start in the guest's address space. If GFN is not specified, the mapping
+      will be performed using IOMEM_START as a start in the guest's address space, therefore
+      performing a 1:1 mapping by default. All of these values must be given in hexadecimal
+      format.
+
+      Note that the IOMMU won't be updated with the mappings specified with this option.
+      This option therefore should not be used to pass through any IOMMU-protected devices.
+
+      It is recommended to only use this option for trusted VMs under administrator's control.
+
+  dtdevs:
+    type: string-array
+    description: |
+      Specifies the host device tree nodes to pass through to this guest.
+      Each dtdev path is an absolute path in the device tree.
+
+  dt-passthrough:
+    type: string-array

@@ -1,0 +1,242 @@
+/*
+ * Copyright (C) 2024 EPAM Systems, Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+#include <mem.h>
+
+/ {
+	domu_configs {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		/* it is needed only for correct filling structures by macros */
+		iomem: iomem {
+			compatible = "xen,domu-iomem";
+			#iomem-cells = <3>;
+		};
+
+		domu@1 {
+			/*
+			 * Most of the properties of this one and children nodes are default and don't appear
+			 * in the resulting dts.
+			 *
+			 * Refer to 'xen,domu.yaml', 'xen,domu-vbd.yaml' and 'xen,domu-vif.yaml' for details.
+			 */
+			compatible = "xen,domu";
+			machine_dt_compat = "renesas,r8a779f0";
+
+			reg = <0x1>;
+			mem_size = <DT_SIZE_M(1024)>;
+			cmdline = "console=hvc0 clk_ignore_unused root=/dev/nfs rw rootwait nfsroot=192.168.1.100:/srv/domd,vers=3 ip=dhcp pci=pcie_bus_perf";
+
+			gic_version = <2>;
+			max_vcpus = <4>;
+			tee = <1>;
+
+			domu-irqs =
+				// gpio@e6050180
+				<854>,
+				// gpio@e6050980
+				<858>,
+				// gpio@e6051180
+				<948>,
+				// gpio@e6051980
+				<952>,
+				// i2c@e6500000
+				<270>,
+				// i2c@e66d8000
+				<274>,
+				// serial@e6550000
+				<278>,
+				// serial@e6e60000
+				<281>,
+				// serial@e6c50000 - used by Xen
+				//    <284>,
+				// dma-controller@e7350000
+				<133>, <134>, <135>, <136>, <137>, <138>, <139>, <140>, <141>, <142>, <143>, <144>, <145>, <146>, <147>, <148>, <149>,
+				// dma-controller@e7351000
+				<151>, <158>, <157>, <152>, <179>, <180>, <181>, <182>, <183>, <184>, <185>, <186>, <155>, <156>, <154>, <153>, <159>,
+				// mmc@ee140000
+				<268>,
+				// dma-controller@ffd60000
+				<64>, <65>, <66>, <67>, <68>, <69>, <70>, <71>, <72>, <73>, <74>, <75>, <76>, <77>, <61>, <62>, <63>,
+				// dma-controller@ffd61000
+				<79>, <80>, <81>, <82>, <83>, <84>, <85>, <86>, <87>, <88>, <89>, <90>, <91>, <92>, <93>, <94>, <95>,
+				// dma-controller@ffd62000
+				<97>, <98>, <99>, <100>, <101>, <102>, <103>, <104>, <105>, <106>, <107>, <108>, <109>, <110>, <111>, <112>, <113>,
+				// dma-controller@ffd63000
+				<128>, <129>, <130>, <131>, <115>, <116>, <117>, <118>, <119>, <120>, <121>, <122>, <123>, <124>, <125>, <126>, <127>,
+				// pcie@e65d0000
+				<448>, <449>, <450>, <451>, <452>, <453>, <454>,
+				// iccom00
+				<352>,
+				// iccom01
+				<354>,
+				// iccom02
+				<356>,
+				// iccom03
+				<358>,
+				// iccom04
+				<360>,
+				// iccom05
+				<362>,
+				// iccom06
+				<364>,
+				// iccom07
+				<366>,
+				// iccom016
+				<386>,
+				// iccom017
+				<388>,
+				// iccom018
+				<390>,
+				// iccom019
+				<392>,
+				// iccom020
+				<394>,
+				// iccom021
+				<396>,
+				// iccom022
+				<398>,
+				// iccom023
+				<400>,
+				// ethernet@e68c0000
+				<312>, <313>, <314>, <315>, <316>, <317>, <318>, <319>, <320>, <321>,
+				<322>, <323>, <324>, <325>, <326>, <327>, <328>, <329>, <330>, <331>,
+				// scsi@e6860000 (UFS)
+				<267>;
+
+			dt-passthrough =
+				"/extal",
+				"/extalr",
+				"/msiof-ref-clock",
+				"/ufs30_refclk_v",
+				"/pcie_bus",
+				"/scif",
+				"/soc",
+				"/regulator-1p8v",
+				"/regulator-3p3v",
+				"/regulator-vcc-sdhi",
+				"/reserved-memory";
+
+			dtdevs =
+				"/soc/dma-controller@e7350000",
+				"/soc/dma-controller@e7351000",
+				"/soc/mmc@ee140000",
+				"/soc/ethernet@e68c0000",
+				"/soc/pcie@e65d0000",
+				"/soc/scsi@e6860000";
+
+			iomems =
+				// iccom shared memory (CTA) - CR52
+				<&iomem 0x47fc7 0x2 0x37fc7>,
+
+				// watchdog@e6020000
+				<&iomem 0xe6020 0x1 0x0>,
+				// pin-controller@e6050000
+				// pin-controller@e6050000
+				// gpio@e6050180
+				// gpio@e6050980
+				<&iomem 0xe6050 0x1 0x0>,
+				// pin-controller@e6050000
+				// pin-controller@e6050000
+				// gpio@e6051180
+				// gpio@e6051980
+				<&iomem 0xe6051 0x1 0x0>,
+				// pin-controller@e6050000
+				// pin-controller@e6050000
+				<&iomem 0xdfd90 0x1 0x0>,
+				// pin-controller@e6050000
+				// pin-controller@e6050000
+				<&iomem 0xdfd91 0x1 0x0>,
+				// clock-controller@e6150000
+				<&iomem 0xe6150 0x4 0x0>,
+				// reset-controller@e6160000
+				<&iomem 0xe6160 0x4 0x0>,
+				// system-controller@e6180000
+				<&iomem 0xe6180 0x4 0x0>,
+				// i2c@e6500000
+				<&iomem 0xe6500 0x1 0x0>,
+				// i2c@e66d8000
+				<&iomem 0xe66d8 0x1 0x0>,
+				// ethernet@e68c0000
+				<&iomem 0xe68c0 0x20 0x0>,
+				// ethernet@e68c0000
+				<&iomem 0xe6444 0x3 0x0>,
+				// serial@e6550000
+				<&iomem 0xe6550 0x1 0x0>,
+				// serial@e6e60000
+				<&iomem 0xe6e60 0x1 0x0>,
+				// dma-controller@e7350000
+				<&iomem 0xe7350 0x1 0x0>,
+				// dma-controller@e7350000
+				<&iomem 0xe7300 0x10 0x0>,
+				// dma-controller@e7351000
+				<&iomem 0xe7351 0x1 0x0>,
+				// dma-controller@e7351000
+				<&iomem 0xe7310 0x10 0x0>,
+				// mmc@ee140000
+				<&iomem 0xee140 0x2 0x0>,
+				// chipid@fff00044
+				<&iomem 0xfff00 0x1 0x0>,
+				// dma-controller@ffd60000
+				<&iomem 0xffd60 0x1 0x0>,
+				// dma-controller@ffd60000
+				<&iomem 0xffc10 0x10 0x0>,
+				// dma-controller@ffd61000
+				<&iomem 0xffd61 0x1 0x0>,
+				// dma-controller@ffd61000
+				<&iomem 0xffc20 0x10 0x0>,
+				// dma-controller@ffd62000
+				<&iomem 0xffd62 0x1 0x0>,
+				// dma-controller@ffd62000
+				<&iomem 0xffd70 0x10 0x0>,
+				// dma-controller@ffd63000
+				<&iomem 0xffd63 0x1 0x0>,
+				// dma-controller@ffd63000
+				<&iomem 0xffd80 0x10 0x0>,
+				// pcie@e65d0000
+				<&iomem 0xe65d3 0x2 0x0>,
+				// pcie@e65d0000
+				<&iomem 0xe65d5 0x2 0x0>,
+				// pcie@e65d0000
+				<&iomem 0xe65d6 0x1 0x0>,
+				// pcie@e65d0000
+				<&iomem 0xe65d7 0x1 0x0>,
+				// thermal@e6198000
+				<&iomem 0xe6198 0x1 0x0>,
+				<&iomem 0xe61a0 0x1 0x0>,
+				<&iomem 0xe61a8 0x1 0x0>,
+				<&iomem 0xe61b0 0x1 0x0>,
+				// iccom_reg_00 - mfis@e6260000
+				// iccom00-iccom015, iccom100-iccom115
+				<&iomem 0xe6260 0x10 0x0>,
+				// scsi@e6860000 (UFS)
+				<&iomem 0xe6860 0x1 0x0>,
+				<&iomem 0xe6078 0x1 0x0>;
+		};
+
+		domu@2 {
+			compatible = "xen,domu";
+			machine_dt_compat = "xen,xenvm";
+			reg = <2>;
+
+			cmdline = "console=hvc0 root=/dev/nfs nfsroot=192.168.1.100:/srv/domu,vers=3 ip=dhcp";
+
+			mem_size = <DT_SIZE_M(128)>;
+			gic_version = <2>;
+
+			vbd {
+				compatible = "xen,domu-vbd";
+				target = "/dev/sda";
+			};
+
+			vif {
+				compatible = "xen,domu-vif";
+				mac = "08:00:27:ff:cb:ce";
+			};
+
+			status = "okay";
+		};
+	};
+};

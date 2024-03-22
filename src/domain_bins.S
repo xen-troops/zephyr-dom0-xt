@@ -1,27 +1,35 @@
 /*
- * Copyright (c) 2023 EPAM Systems
- *
+ * Copyright (c) 2023-2024 EPAM Systems
  * SPDX-License-Identifier: Apache-2.0
  */
-
 #include <zephyr/toolchain.h>
 
-/* DomD binary from include/ dir */
-.section .data.domd_img,"a"
+.section .data.img_d,"a"
+GDATA(__img_d_start)
+GDATA(__img_d_end)
+__img_d_start:
+.incbin CONFIG_DOMD_BIN_PATH
+__img_d_end:
 
-GDATA(__img_domd_start)
-GDATA(__img_domd_end)
+.section .data.dtb_d,"a"
+GDATA(__dtb_d_start)
+GDATA(__dtb_d_end)
+__dtb_d_start:
+.align 8
+.incbin CONFIG_DOMD_DTB_PATH
+__dtb_d_end:
 
-__img_domd_start:
-.incbin		"domd_img.bin"
-__img_domd_end:
+.section .data.img_u,"a"
+GDATA(__img_u_start)
+GDATA(__img_u_end)
+__img_u_start:
+.incbin CONFIG_DOMU_BIN_PATH
+__img_u_end:
 
-/* DomD dtb from include/ dir */
-.section .data.dtb_domd,"a"
-
-GDATA(__dtb_domd_start)
-GDATA(__dtb_domd_end)
-
-__dtb_domd_start:
-.incbin		"domd.dtb"
-__dtb_domd_end:
+.section .data.dtb_u,"a"
+GDATA(__dtb_u_start)
+GDATA(__dtb_u_end)
+__dtb_u_start:
+.align 8
+.incbin CONFIG_DOMU_DTB_PATH
+__dtb_u_end:
