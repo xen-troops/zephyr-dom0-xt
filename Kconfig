@@ -1,0 +1,32 @@
+# Copyright (C) 2023 Renesas Electronics Corporation.
+# Copyright (C) 2023 EPAM Systems, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+mainmenu "Zephyr Dom0 xen-troops application"
+
+config DOMD_BIN_PATH
+	string "Location for Domain-D binary"
+	default "../prebuilt/Image-h3ulcb.bin" if BOARD_RCAR_H3ULCB_CA57
+	default "../prebuilt/Image-salvator.bin" if BOARD_RCAR_SALVATOR_XS_M3
+	default "../prebuilt/Image-spider.bin" if BOARD_RCAR_SPIDER
+
+config DOMD_DTB_PATH
+	string "Location of Domain-D partial device-tree"
+	default "../prebuilt/r8a77951-h3ulcb-4x2g-kf-domd.dtb" if BOARD_RCAR_H3ULCB_CA57
+	default "../prebuilt/r8a77961-salvator-xs-2x4g-domd.dtb" if BOARD_RCAR_SALVATOR_XS_M3
+	default "../prebuilt/r8a779f0-spider-domd.dtb" if BOARD_RCAR_SPIDER
+
+config DOMU
+	bool "Enable DomU support"
+	default y if DT_HAS_XEN_DOMU_ENABLED
+
+config DOMU_BIN_PATH
+	string "Location for Domain-U binary"
+	default "../prebuilt/domu.bin"
+
+config DOMU_DTB_PATH
+	string "Location of Domain-U partial device-tree"
+	default "../prebuilt/domu.dtb"
+
+source "Kconfig"

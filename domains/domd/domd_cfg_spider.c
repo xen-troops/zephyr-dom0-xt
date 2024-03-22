@@ -1,0 +1,278 @@
+/*
+ * Copyright (c) 2023 EPAM Systems
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <domain.h>
+#include <string.h>
+#include <zephyr/xen/public/domctl.h>
+
+static char* domd_dtdevs[] = {
+    "/soc/dma-controller@e7350000",
+    "/soc/dma-controller@e7351000",
+    "/soc/mmc@ee140000",
+    "/soc/ethernet@e68c0000",
+    "/soc/pcie@e65d0000",
+    "/soc/scsi@e6860000",
+};
+static char* dt_passthrough_nodes[] = {
+    "/extal",
+    "/extalr",
+    "/msiof-ref-clock",
+    "/ufs30_refclk_v",
+    "/pcie_bus",
+    "/scif",
+    "/soc",
+    "/regulator-1p8v",
+    "/regulator-3p3v",
+    "/regulator-vcc-sdhi",
+    "/reserved-memory",
+};
+
+static struct xen_domain_iomem domd_iomems[] = {
+    // iccom shared memory (CTA) - CR52
+    {.first_mfn = 0x47fc7, .first_gfn = 0x37fc7, .nr_mfns = 0x2},
+
+    // watchdog@e6020000
+    {.first_mfn = 0xe6020, .nr_mfns = 0x1},
+    // pin-controller@e6050000
+    // pin-controller@e6050000
+    // gpio@e6050180
+    // gpio@e6050980
+    {.first_mfn = 0xe6050, .nr_mfns = 0x1},
+    // pin-controller@e6050000
+    // pin-controller@e6050000
+    // gpio@e6051180
+    // gpio@e6051980
+    {.first_mfn = 0xe6051, .nr_mfns = 0x1},
+    // pin-controller@e6050000
+    // pin-controller@e6050000
+    {.first_mfn = 0xdfd90, .nr_mfns = 0x1},
+    // pin-controller@e6050000
+    // pin-controller@e6050000
+    {.first_mfn = 0xdfd91, .nr_mfns = 0x1},
+    // clock-controller@e6150000
+    {.first_mfn = 0xe6150, .nr_mfns = 0x4},
+    // reset-controller@e6160000
+    {.first_mfn = 0xe6160, .nr_mfns = 0x4},
+    // system-controller@e6180000
+    {.first_mfn = 0xe6180, .nr_mfns = 0x4},
+    // i2c@e6500000
+    {.first_mfn = 0xe6500, .nr_mfns = 0x1},
+    // i2c@e66d8000
+    {.first_mfn = 0xe66d8, .nr_mfns = 0x1},
+    // ethernet@e68c0000
+    {.first_mfn = 0xe68c0, .nr_mfns = 0x20},
+    // ethernet@e68c0000
+    {.first_mfn = 0xe6444, .nr_mfns = 0x3},
+    // serial@e6550000
+    {.first_mfn = 0xe6550, .nr_mfns = 0x1},
+    // serial@e6e60000
+    {.first_mfn = 0xe6e60, .nr_mfns = 0x1},
+    // dma-controller@e7350000
+    {.first_mfn = 0xe7350, .nr_mfns = 0x1},
+    // dma-controller@e7350000
+    {.first_mfn = 0xe7300, .nr_mfns = 0x10},
+    // dma-controller@e7351000
+    {.first_mfn = 0xe7351, .nr_mfns = 0x1},
+    // dma-controller@e7351000
+    {.first_mfn = 0xe7310, .nr_mfns = 0x10},
+    // mmc@ee140000
+    {.first_mfn = 0xee140, .nr_mfns = 0x2},
+    // chipid@fff00044
+    {.first_mfn = 0xfff00, .nr_mfns = 0x1},
+    // dma-controller@ffd60000
+    {.first_mfn = 0xffd60, .nr_mfns = 0x1},
+    // dma-controller@ffd60000
+    {.first_mfn = 0xffc10, .nr_mfns = 0x10},
+    // dma-controller@ffd61000
+    {.first_mfn = 0xffd61, .nr_mfns = 0x1},
+    // dma-controller@ffd61000
+    {.first_mfn = 0xffc20, .nr_mfns = 0x10},
+    // dma-controller@ffd62000
+    {.first_mfn = 0xffd62, .nr_mfns = 0x1},
+    // dma-controller@ffd62000
+    {.first_mfn = 0xffd70, .nr_mfns = 0x10},
+    // dma-controller@ffd63000
+    {.first_mfn = 0xffd63, .nr_mfns = 0x1},
+    // dma-controller@ffd63000
+    {.first_mfn = 0xffd80, .nr_mfns = 0x10},
+    // pcie@e65d0000
+    {.first_mfn = 0xe65d3, .nr_mfns = 0x2},
+    // pcie@e65d0000
+    {.first_mfn = 0xe65d5, .nr_mfns = 0x2},
+    // pcie@e65d0000
+    {.first_mfn = 0xe65d6, .nr_mfns = 0x1},
+    // pcie@e65d0000
+    {.first_mfn = 0xe65d7, .nr_mfns = 0x1},
+    // thermal@e6198000
+    {.first_mfn = 0xe6198, .nr_mfns = 0x1},
+    {.first_mfn = 0xe61a0, .nr_mfns = 0x1},
+    {.first_mfn = 0xe61a8, .nr_mfns = 0x1},
+    {.first_mfn = 0xe61b0, .nr_mfns = 0x1},
+    // iccom_reg_00 - mfis@e6260000
+    // iccom00
+    // iccom01
+    // iccom02
+    // iccom03
+    // iccom04
+    // iccom05
+    // iccom06
+    // iccom07
+    // iccom08
+    // iccom09
+    // iccom010
+    // iccom011
+    // iccom012
+    // iccom013
+    // iccom014
+    // iccom015
+    // iccom100
+    // iccom101
+    // iccom102
+    // iccom103
+    // iccom104
+    // iccom105
+    // iccom106
+    // iccom107
+    // iccom108
+    // iccom109
+    // iccom110
+    // iccom111
+    // iccom112
+    // iccom113
+    // iccom114
+    // iccom115
+    {.first_mfn = 0xe6260, .nr_mfns = 0x10},
+    // scsi@e6860000 (UFS)
+    {.first_mfn = 0xe6860, .nr_mfns = 0x1},
+    {.first_mfn = 0xe6078, .nr_mfns = 0x1},
+};
+
+static uint32_t domd_irqs[] = {
+    // gpio@e6050180
+    854,
+    // gpio@e6050980
+    858,
+    // gpio@e6051180
+    948,
+    // gpio@e6051980
+    952,
+    // i2c@e6500000
+    270,
+    // i2c@e66d8000
+    274,
+    // serial@e6550000
+    278,
+    // serial@e6e60000
+    281,
+    // serial@e6c50000 - used by Xen
+    //    284,
+    // dma-controller@e7350000
+    133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149,
+    // dma-controller@e7351000
+    151, 158, 157, 152, 179, 180, 181, 182, 183, 184, 185, 186, 155, 156, 154, 153, 159,
+    // mmc@ee140000
+    268,
+    // dma-controller@ffd60000
+    64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 61, 62, 63,
+    // dma-controller@ffd61000
+    79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
+    // dma-controller@ffd62000
+    97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
+    // dma-controller@ffd63000
+    128, 129, 130, 131, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
+    // pcie@e65d0000
+    448, 449, 450, 451, 452, 453, 454,
+    // iccom00
+    352,
+    // iccom01
+    354,
+    // iccom02
+    356,
+    // iccom03
+    358,
+    // iccom04
+    360,
+    // iccom05
+    362,
+    // iccom06
+    364,
+    // iccom07
+    366,
+    // iccom016
+    386,
+    // iccom017
+    388,
+    // iccom018
+    390,
+    // iccom019
+    392,
+    // iccom020
+    394,
+    // iccom021
+    396,
+    // iccom022
+    398,
+    // iccom023
+    400,
+    // ethernet@e68c0000
+    312, 313, 314, 315, 316, 317, 318, 319, 320, 321,
+    322, 323, 324, 325, 326, 327, 328, 329, 330, 331,
+    // scsi@e6860000 (UFS)
+    267,
+};
+
+extern char __img_ipl_start[];
+extern char __img_ipl_end[];
+extern char __dtb_ipl_start[];
+extern char __dtb_ipl_end[];
+
+static int load_ipl_image(uint8_t* buf, size_t bufsize, uint64_t image_load_offset, void* image_info)
+{
+    ARG_UNUSED(image_info);
+    memcpy(buf, __img_ipl_start + image_load_offset, bufsize);
+    return 0;
+}
+
+static ssize_t get_ipl_image_size(void* image_info, uint64_t* size)
+{
+    ARG_UNUSED(image_info);
+    *size = __img_ipl_end - __img_ipl_start;
+    return 0;
+}
+
+struct xen_domain_cfg domd_cfg = {
+    .machine_dt_compat = "renesas,r8a779f0",
+    .mem_kb            = 0x100000, /* 1Gb */
+
+    .cmdline = "console=hvc0 root=/dev/nfs nfsroot=10.22.64.15:/home/testrpi1/nfs/h3ulcb,vers=3 clk_ignore_unused pci=pcie_bus_perf",
+
+    .flags               = (XEN_DOMCTL_CDF_hvm | XEN_DOMCTL_CDF_hap | XEN_DOMCTL_CDF_iommu),
+    .max_evtchns         = 10,
+    .max_vcpus           = 4,
+    .gnt_frames          = 32,
+    .max_maptrack_frames = 1,
+
+    .iomems    = domd_iomems,
+    .nr_iomems = ARRAY_SIZE(domd_iomems),
+
+    .irqs    = domd_irqs,
+    .nr_irqs = ARRAY_SIZE(domd_irqs),
+
+    .gic_version = XEN_DOMCTL_CONFIG_GIC_V3,
+    .tee_type    = XEN_DOMCTL_CONFIG_TEE_OPTEE,
+
+    .dtdevs    = domd_dtdevs,
+    .nr_dtdevs = ARRAY_SIZE(domd_dtdevs),
+
+    .dt_passthrough    = dt_passthrough_nodes,
+    .nr_dt_passthrough = ARRAY_SIZE(dt_passthrough_nodes),
+    .load_image_bytes  = load_ipl_image,
+    .get_image_size    = get_ipl_image_size,
+    .image_info        = NULL,
+
+    .dtb_start = __dtb_ipl_start,
+    .dtb_end   = __dtb_ipl_end,
+};
