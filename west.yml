@@ -14,6 +14,7 @@ manifest:
       remote: xentroops
       revision: zephyr-v3.3.0-xt
       west-commands: scripts/west-commands.yml
+
     - name: zephyr-xenlib
       remote: xentroops
       revision: main
