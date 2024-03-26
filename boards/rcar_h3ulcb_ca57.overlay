@@ -1,0 +1,11 @@
+/*
+ * Copyright (C) 2024
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <mem.h>
+
+/delete-node/ &sd0;
+/delete-node/ &vcc_sd0;
+/delete-node/ &vccq_sd0;
+/delete-node/ &gpio5;
