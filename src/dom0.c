@@ -10,5 +10,5 @@ struct xen_domain_cfg domd_cfg = {};
 
 void main(void)
 {
-
+	create_and_unpause_domus();
 }
