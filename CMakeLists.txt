@@ -9,8 +9,7 @@ include($ENV{ZEPHYR_BASE}/cmake/app/boilerplate.cmake NO_POLICY_SCOPE)
 project(xen-dom0)
 
 include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 # Add prebuilt to includes so assembler can find this files
 include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/prebuilt)
 
-target_sources(app PRIVATE src/dom0.c src/domd_cfg.c src/domain_bins.S)
+target_sources(app PRIVATE src/dom0.c src/domu_cfgs.c src/domain_bins.S)
