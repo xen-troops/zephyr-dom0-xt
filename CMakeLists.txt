@@ -13,4 +13,14 @@ include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Add prebuilt to includes so assembler can find this files
 include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/prebuilt)
 
-target_sources(app PRIVATE src/dom0.c src/domd_cfg.c src/domain_bins.S)
+target_sources(app PRIVATE src/dom0.c src/domain_bins.S)
+
+if(CONFIG_USE_DEFAULT_DOM_CFG)
+  target_sources(app PRIVATE src/domd_cfg.c)
+else()
+  if(CONFIG_DOM_CFG_BOARD_EXT)
+    target_sources(app PRIVATE src/dom_cfg/dom_cfg_${BOARD}_${CONFIG_DOM_CFG_BOARD_EXT}.c)
+  else()
+    target_sources(app PRIVATE src/dom_cfg/dom_cfg_${BOARD}.c)
+  endif()
+endif()
