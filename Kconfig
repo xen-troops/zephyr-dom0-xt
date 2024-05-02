@@ -1,0 +1,27 @@
+# Copyright (c) 2024 EPAM Systems
+#
+# SPDX-License-Identifier: Apache-2.0
+
+config USE_DEFAULT_DOM_CFG
+	bool "Use default guest domain cfg"
+	default y
+	help
+	  Use default guest domain cfg from domu_cfg.c for build.
+	  if not selected the guest domain cfg source file will be selected as basing
+	  on board/platform:
+	    dom_cfg/${BOARD}.c.
+	  For example, for RPI 5 the dom_cfg/rpi_5.c will be used.
+
+config DOM_CFG_BOARD_EXT
+	string "Use extention string to determine guest domain cfg"
+	depends on !USE_DEFAULT_DOM_CFG
+	help
+	  Use it to add extention string to determine guest domain cfg file to build.
+	  The guest domain cfg source file will be selected as following:
+	    dom_cfg/${BOARD}_${DOM_CFG_BOARD_EXT}.c
+	  This allows to specify number of guest domain configs for the same board.
+	  For example:
+	    rpi_5_xenvm.c
+	    rpi_5_domu.c
+
+source "Kconfig.zephyr"
