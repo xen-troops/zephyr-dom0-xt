@@ -24,4 +24,11 @@ config DOM_CFG_BOARD_EXT
 	    rpi_5_xenvm.c
 	    rpi_5_domd.c
 
+config DOM_CFG_NUMBER
+	int "Number of guest domain configs"
+	default 1
+	range 1 2
+	help
+	  Number of guest domain configs.
+
 source "Kconfig.zephyr"

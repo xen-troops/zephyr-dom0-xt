@@ -376,17 +376,17 @@ static uint32_t domd_irqs[] = {
 			185,
 };
 
-extern char __img_domd_start[];
-extern char __img_domd_end[];
-extern char __dtb_domd_start[];
-extern char __dtb_domd_end[];
+extern char __img_domd_start_0[];
+extern char __img_domd_end_0[];
+extern char __dtb_domd_start_0[];
+extern char __dtb_domd_end_0[];
 
 static int load_domd_image_bytes(uint8_t *buf, size_t bufsize,
 		   uint64_t offset, void *image_info)
 {
 	ARG_UNUSED(image_info);
 
-	memcpy(buf, __img_domd_start + offset, bufsize);
+	memcpy(buf, __img_domd_start_0 + offset, bufsize);
 	return 0;
 }
 
@@ -394,11 +394,11 @@ static ssize_t get_domd_image_size(void *image_info, uint64_t *size)
 {
 	ARG_UNUSED(image_info);
 
-	*size = __img_domd_end - __img_domd_start;
+	*size = __img_domd_end_0 - __img_domd_start_0;
 	return 0;
 }
 
-struct xen_domain_cfg domd_cfg = {
+struct xen_domain_cfg domd_cfg_0 = {
 	.mem_kb = 16384,
 
 	.flags = (XEN_DOMCTL_CDF_hvm | XEN_DOMCTL_CDF_hap),
@@ -422,6 +422,6 @@ struct xen_domain_cfg domd_cfg = {
 	.load_image_bytes = load_domd_image_bytes,
 	.get_image_size = get_domd_image_size,
 
-	.dtb_start = __dtb_domd_start,
-	.dtb_end = __dtb_domd_end,
+	.dtb_start = __dtb_domd_start_0,
+	.dtb_end = __dtb_domd_end_0,
 };
