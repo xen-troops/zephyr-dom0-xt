@@ -31,7 +31,8 @@ static ssize_t get_domu_image_size(void *image_info, uint64_t *size)
 	return 0;
 }
 
-struct xen_domain_cfg domu0_cfg = {
+static struct xen_domain_cfg domu_cfg_0 = {
+	.name = "domu_default",
 	.mem_kb = 16384,
 
 	.flags = (XEN_DOMCTL_CDF_hvm | XEN_DOMCTL_CDF_hap),
@@ -49,4 +50,9 @@ struct xen_domain_cfg domu0_cfg = {
 
 	.dtb_start = __dtb_domu0_start,
 	.dtb_end = __dtb_domu0_end,
+};
+
+struct xen_domain_cfg *domain_cfgs[] = {
+	&domu_cfg_0,
+	NULL,
 };

@@ -24,4 +24,20 @@ config DOM_CFG_BOARD_EXT
 	    rpi_5_xenvm.c
 	    rpi_5_domu.c
 
+config DOM_CFG_DOMU0_IMAGE_BIN_FILE
+	string "Location for Domain-U0 kernel binary"
+	default "domu0_img.bin"
+
+config DOM_CFG_DOMU0_DTB_BIN_FILE
+	string "Location for Domain-U0 device-tree"
+	default "domu0.dtb"
+
+config DOM_CFG_DOMU1_IMAGE_BIN_FILE
+	string "Location for Domain-U1 kernel binary"
+	depends on DOM_CFG_NUMBER > 1
+
+config DOM_CFG_DOMU1_DTB_BIN_FILE
+	string "Location for Domain-U1 device-tree"
+	depends on DOM_CFG_NUMBER > 1
+
 source "Kconfig.zephyr"

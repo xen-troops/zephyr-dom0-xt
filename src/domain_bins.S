@@ -13,7 +13,7 @@ GDATA(__img_domu0_start)
 GDATA(__img_domu0_end)
 
 __img_domu0_start:
-.incbin		"domu0_img.bin"
+.incbin		CONFIG_DOM_CFG_DOMU0_IMAGE_BIN_FILE
 __img_domu0_end:
 
 /* DomU0 dtb from include/ dir */
@@ -23,5 +23,29 @@ GDATA(__dtb_domu0_start)
 GDATA(__dtb_domu0_end)
 
 __dtb_domu0_start:
-.incbin		"domu0.dtb"
+.incbin		CONFIG_DOM_CFG_DOMU0_DTB_BIN_FILE
 __dtb_domu0_end:
+
+#if defined(CONFIG_DOM_CFG_DOMU1_IMAGE_BIN_FILE)
+/* DomU1 binary from include/ dir */
+.section .data.domu1_img,"a"
+
+GDATA(__img_domu1_start)
+GDATA(__img_domu1_end)
+
+__img_domu1_start:
+.incbin		CONFIG_DOM_CFG_DOMU1_IMAGE_BIN_FILE
+__img_domu1_end:
+#endif /* CONFIG_DOM_CFG_DOMU1_IMAGE_BIN_FILE */
+
+#if defined(CONFIG_DOM_CFG_DOMU1_DTB_BIN_FILE)
+/* DomU1 dtb from include/ dir */
+.section .data.dtb_domu1,"a"
+
+GDATA(__dtb_domu1_start)
+GDATA(__dtb_domu1_end)
+
+__dtb_domu1_start:
+.incbin		CONFIG_DOM_CFG_DOMU1_DTB_BIN_FILE
+__dtb_domu1_end:
+#endif /* CONFIG_DOM_CFG_DOMU1_DTB_BIN_FILE */
