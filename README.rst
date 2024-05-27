@@ -13,6 +13,21 @@ The **zephyr-dom0-xt** application intended to be started by `XEN`_ as Dom0 doma
 
 The **zephyr-dom0-xt** doesn't create any `XEN`_ guest domains on start by default.
 
+Getting Started
+***************
+
+Follow Zephyr `Getting Started guide <https://docs.zephyrproject.org/latest/develop/getting_started/index.html#getting-started-guide>`_ to setup Zephyr prerequisites.
+
+In section `Get Zephyr and install Python dependencies <https://docs.zephyrproject.org/latest/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies>`_
+replace step **Get the Zephyr source code:** with below commands:
+
+.. code-block:: bash
+
+    mkdir ~/zephyr-dom0-xt
+    cd ~/zephyr-dom0-xt
+    west init -m https://github.com/xen-troops/zephyr-dom0-xt.git --mr rpi5_dom0_dev
+    west update
+
 Requirements
 ************
 
