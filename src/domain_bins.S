@@ -18,6 +18,7 @@ __img_domu0_end:
 
 /* DomU0 dtb from include/ dir */
 .section .data.dtb_domu0,"a"
+.align 8
 
 GDATA(__dtb_domu0_start)
 GDATA(__dtb_domu0_end)
@@ -41,6 +42,7 @@ __img_domu1_end:
 #if defined(CONFIG_DOM_CFG_DOMU1_DTB_BIN_FILE)
 /* DomU1 dtb from include/ dir */
 .section .data.dtb_domu1,"a"
+.align 8
 
 GDATA(__dtb_domu1_start)
 GDATA(__dtb_domu1_end)
