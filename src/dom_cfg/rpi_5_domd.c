@@ -9,6 +9,8 @@
 
 #include <string.h>
 
+#include "../dom0.h"
+
 static struct xen_domain_iomem domd_iomems[] = {
 	{ .first_mfn = 0x107D517, .nr_mfns = 0x1, .first_gfn = 0},
 };
@@ -64,7 +66,9 @@ static struct xen_domain_cfg domu_cfg_0 = {
 	.dtb_end = __dtb_domu0_end,
 };
 
-struct xen_domain_cfg *domain_cfgs[] = {
-	&domu_cfg_0,
-	NULL,
+struct dom0_domain_cfg domain_cfgs[] = {
+	{
+		.domain_cfg = &domu_cfg_0,
+	},
+	{ 0 },
 };

@@ -9,6 +9,8 @@
 
 #include <string.h>
 
+#include "dom0.h"
+
 extern char __img_domu0_start[];
 extern char __img_domu0_end[];
 extern char __dtb_domu0_start[];
@@ -52,7 +54,9 @@ static struct xen_domain_cfg domu_cfg_0 = {
 	.dtb_end = __dtb_domu0_end,
 };
 
-struct xen_domain_cfg *domain_cfgs[] = {
-	&domu_cfg_0,
-	NULL,
+struct dom0_domain_cfg domain_cfgs[] = {
+	{
+		.domain_cfg = &domu_cfg_0,
+	},
+	{ 0 },
 };

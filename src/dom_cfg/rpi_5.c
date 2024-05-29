@@ -8,6 +8,8 @@
 #include <zephyr/xen/public/domctl.h>
 #include <string.h>
 
+#include "../dom0.h"
+
 /*
  * Example Xen guest domains configuration file for "rpi_5" which contains
  * - domu_cfg_0 as DomD example which uses real HW "/soc/gpio@7d517c00" and can be used to run
@@ -110,8 +112,12 @@ static struct xen_domain_cfg domu_cfg_0 = {
 	.dtb_end = __dtb_domu0_end,
 };
 
-struct xen_domain_cfg *domain_cfgs[] = {
-	&domu_cfg_0,
-	&domu_cfg_1,
-	NULL,
+struct dom0_domain_cfg domain_cfgs[] = {
+	{
+		.domain_cfg = &domu_cfg_0,
+	},
+	{
+		.domain_cfg = &domu_cfg_1,
+	},
+	{ 0 },
 };

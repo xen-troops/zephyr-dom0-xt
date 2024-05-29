@@ -43,14 +43,16 @@ Xen guest domains configuration
 *******************************
 
 For Xen guest domains configuration the **zephyr-dom0-xt** application uses `zephyr-xenlib`_
-domain's configuration format defined by ``struct xen_domain_cfg``.
+domain's configuration format defined by ``struct dom0_domain_cfg`` which includes pointer on xenlib
+domain configuration ``struct xen_domain_cfg``.
 
 .. note::
 
     The number of supported guest domain's kernel and DTB binary images is limited to 2.
 
-Each Xen guest domain's configurations shell be defined as  ``struct xen_domain_cfg`` and listed
-in public array named "domain_cfgs". The last member of ``domain_cfgs`` array should be NULL.
+Each Xen guest domain's configurations shell be defined as  ``struct dom0_domain_cfg`` and listed
+in public array named "domain_cfgs". The last member of ``domain_cfgs`` array should
+be filled with all 0x0.
 
     For example:
 
@@ -62,11 +64,15 @@ in public array named "domain_cfgs". The last member of ``domain_cfgs`` array sh
     struct xen_domain_cfg domu_cfg_1 = {
     }
 
-    struct xen_domain_cfg *domain_cfgs[] = {
-         &domu_cfg_0,
-         &domu_cfg_1,
-         NULL,
-    };
+struct dom0_domain_cfg domain_cfgs[] = {
+	{
+		.domain_cfg = &domu_cfg_0,
+	},
+	{
+		.domain_cfg = &domu_cfg_1,
+	},
+	{ 0 },
+};
 
 It is possible to use the same guest domain kernel or DTB image for a number of
 domain's configurations.
