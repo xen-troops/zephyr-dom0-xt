@@ -1,0 +1,122 @@
+/*
+ * Copyright (c) 2024 EPAM Systems
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <zephyr/kernel.h>
+#include <zephyr/fs/fs.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/storage/disk_access.h>
+
+LOG_MODULE_REGISTER(dom0_storage);
+
+#include <ff.h>
+#include <storage.h>
+
+#include "dom0.h"
+
+static FATFS fat_fs;
+/* mounting info */
+static struct fs_mount_t mp = {
+	.type = FS_FATFS,
+	.fs_data = &fat_fs,
+};
+
+int storage_image_kernel_read(uint8_t *buf, size_t bufsize, uint64_t offset, void *image_info)
+{
+	struct dom0_domain_cfg *dom_cfg = image_info;
+
+	LOG_INF("storage: file read %s size: %zd", dom_cfg->image_kernel_path, bufsize);
+	return xrun_read_file(dom_cfg->image_kernel_path, buf, bufsize, offset);
+}
+
+ssize_t storage_image_kernel_get_size(void *image_info, uint64_t *size)
+{
+	struct dom0_domain_cfg *dom_cfg = image_info;
+	ssize_t r_size;
+
+	r_size = xrun_get_file_size(dom_cfg->image_kernel_path);
+	if (r_size >= 0) {
+		*size = r_size;
+		return 0;
+	}
+
+	return r_size;
+}
+
+int storage_image_dt_read(uint8_t *buf, size_t bufsize, uint64_t offset, void *image_info)
+{
+	struct dom0_domain_cfg *dom_cfg = image_info;
+
+	LOG_INF("storage: file read %s size: %zd", dom_cfg->image_dt_path, bufsize);
+	return xrun_read_file(dom_cfg->image_dt_path, buf, bufsize, offset);
+}
+
+int storage_image_dt_get_size(void *image_info, size_t *size)
+{
+	struct dom0_domain_cfg *dom_cfg = image_info;
+	ssize_t r_size;
+
+	r_size = xrun_get_file_size(dom_cfg->image_dt_path);
+	if (r_size >= 0) {
+		*size = r_size;
+		return 0;
+	}
+
+	return r_size;
+}
+
+int storage_init(void)
+{
+	uint64_t memory_size_mb;
+	struct fs_dir_t dirp;
+	uint32_t block_count;
+	uint32_t block_size;
+
+	int ret;
+
+	ret = disk_access_init(DISK_DRIVE_NAME);
+	if (ret) {
+		LOG_ERR("storage: init failed (%d)", ret);
+		goto exit_err;
+	}
+
+	ret = disk_access_ioctl(DISK_DRIVE_NAME, DISK_IOCTL_GET_SECTOR_COUNT, &block_count);
+	if (ret) {
+		LOG_ERR("storage: get sector count failed (%d)", ret);
+		goto exit_err;
+	}
+
+	ret = disk_access_ioctl(DISK_DRIVE_NAME, DISK_IOCTL_GET_SECTOR_SIZE, &block_size);
+	if (ret) {
+		LOG_ERR("storage: get sector size failed (%d)", ret);
+		goto exit_err;
+	}
+
+	memory_size_mb = (uint64_t)block_count * block_size;
+	LOG_INF("storage: block count %u, Sector size %u, Memory Size(MB) %u", block_count,
+		block_size, (uint32_t)(memory_size_mb >> 20));
+
+	mp.mnt_point = DISK_MOUNT_PT;
+
+	ret = fs_mount(&mp);
+	if (ret) {
+		LOG_ERR("storage: mount failed (%d)", ret);
+		goto exit_err;
+	}
+	LOG_INF("storage: mounted, binaries folder %s", DISK_BIN_PATH);
+
+	/* Verify binaries folder */
+	fs_dir_t_init(&dirp);
+	ret = fs_opendir(&dirp, DISK_BIN_PATH);
+	if (ret) {
+		LOG_ERR("storage: error opening dir %s [%d]\n", DISK_BIN_PATH, ret);
+		return ret;
+	}
+
+	fs_closedir(&dirp);
+
+exit_err:
+	return ret;
+}

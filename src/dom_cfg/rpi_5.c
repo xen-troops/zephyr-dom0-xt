@@ -18,6 +18,7 @@
  *   For example samples/synchronization
  */
 
+#if !defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
 extern char __img_domu1_start[];
 extern char __img_domu1_end[];
 extern char __dtb_domu1_start[];
@@ -38,6 +39,7 @@ static ssize_t get_domu_image_size(void *image_info, uint64_t *size)
 	*size = __img_domu1_end - __img_domu1_start;
 	return 0;
 }
+#endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 
 static struct xen_domain_cfg domu_cfg_1 = {
 	.name = "rpi_5_domu",
@@ -51,11 +53,19 @@ static struct xen_domain_cfg domu_cfg_1 = {
 	.tee_type = XEN_DOMCTL_CONFIG_TEE_NONE,
 	.cmdline = "",
 
+#if !defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
 	.load_image_bytes = load_domu_image_bytes,
 	.get_image_size = get_domu_image_size,
 
 	.dtb_start = __dtb_domu1_start,
 	.dtb_end = __dtb_domu1_end,
+#else
+	.load_image_bytes = storage_image_kernel_read,
+	.get_image_size = storage_image_kernel_get_size,
+
+	.image_dt_read = storage_image_dt_read,
+	.image_dt_get_size = storage_image_dt_get_size,
+#endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 };
 
 static struct xen_domain_iomem domd_iomems[] = {
@@ -66,6 +76,7 @@ static char *domd_dt_passthrough[] = {
 	"/soc/gpio@7d517c00",
 };
 
+#if !defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
 extern char __img_domu0_start[];
 extern char __img_domu0_end[];
 extern char __dtb_domu0_start[];
@@ -86,6 +97,7 @@ static ssize_t get_domd_image_size(void *image_info, uint64_t *size)
 	*size = __img_domu0_end - __img_domu0_start;
 	return 0;
 }
+#endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 
 static struct xen_domain_cfg domu_cfg_0 = {
 	.name = "rpi_5_domd",
@@ -105,19 +117,36 @@ static struct xen_domain_cfg domu_cfg_0 = {
 	.dt_passthrough = domd_dt_passthrough,
 	.nr_dt_passthrough = ARRAY_SIZE(domd_dt_passthrough),
 
+#if !defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
 	.load_image_bytes = load_domd_image_bytes,
 	.get_image_size = get_domd_image_size,
 
 	.dtb_start = __dtb_domu0_start,
 	.dtb_end = __dtb_domu0_end,
+#else
+	.load_image_bytes = storage_image_kernel_read,
+	.get_image_size = storage_image_kernel_get_size,
+
+	.image_dt_read = storage_image_dt_read,
+	.image_dt_get_size = storage_image_dt_get_size,
+#endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
+
 };
 
 struct dom0_domain_cfg domain_cfgs[] = {
 	{
 		.domain_cfg = &domu_cfg_0,
+#if defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
+		.image_kernel_path = DISK_BIN_PATH"z_blinky.bin",
+		.image_dt_path = DISK_BIN_PATH"z_blinky.dtb"
+#endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 	},
 	{
 		.domain_cfg = &domu_cfg_1,
+#if defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
+		.image_kernel_path = DISK_BIN_PATH"z_sync.bin",
+		.image_dt_path = DISK_BIN_PATH"z_sync.dtb"
+#endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 	},
 	{ 0 },
 };

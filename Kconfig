@@ -24,6 +24,39 @@ config DOM_CFG_BOARD_EXT
 	    rpi_5_xenvm.c
 	    rpi_5_domu.c
 
+config DOM_STORAGE_FATFS_ENABLE
+	bool "Enable FATFS disk storage for reading domains kernels/dtb images"
+	default n
+	select DISK_ACCESS
+	select FILE_SYSTEM
+	select FAT_FILESYSTEM_ELM
+	select XRUN
+	help
+	  Enables FATFS disk storage and adds possibility to read guest domains
+	  kernels/dtb images from storage.
+
+if DOM_STORAGE_FATFS_ENABLE
+
+config FS_FATFS_MOUNT_MKFS
+	default n
+
+config FS_FATFS_WINDOW_ALIGNMENT
+	default SDHC_BUFFER_ALIGNMENT
+
+config FS_FATFS_LBA64
+	default y
+
+config FS_FATFS_EXFAT
+	default y
+
+config DOM_STORAGE_FATFS_DIR
+	string "FATFS folder where domains kernels/dtb images"
+	default "dom0/"
+	help
+	  FATFS folder where domains kernels/dtb images are located.
+
+endif #DOM_STORAGE_FATFS_ENABLE
+
 config DOM_CFG_DOMU0_IMAGE_BIN_FILE
 	string "Location for Domain-U0 kernel binary"
 	default "domu0_img.bin"

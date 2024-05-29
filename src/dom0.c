@@ -36,7 +36,13 @@ struct xen_domain_cfg *domain_get_user_cfg(int index)
 
 int main(void)
 {
+	int ret;
 	int i = 0;
+
+	ret = storage_init();
+	if (ret) {
+		goto exit_err;
+	}
 
 	/* It's required to init xenlib struct xen_domain_cfg->image_info with pointer
 	 * at struct dom0_domain_cfg, so it can be passed in binary images loading callbacks like
