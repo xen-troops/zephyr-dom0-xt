@@ -54,6 +54,14 @@ config DOM_STORAGE_FATFS_DIR
 	default "dom0/"
 	help
 	  FATFS folder where domains kernels/dtb images are located.
+	  It should be ended with "/" symbol.
+
+config DOM_STORAGE_FATFS_LOGICAL_DRIVE_NAME
+	string "FATFS logical drive name to be used as mount point"
+	default "0" if FS_MULTI_PARTITION
+	default SDMMC_VOLUME_NAME
+	help
+	  FATFS logical drive name to be used as mount point.
 
 endif #DOM_STORAGE_FATFS_ENABLE
 

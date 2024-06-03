@@ -57,8 +57,8 @@ domains configuration.
 Xen guest domains configuration
 *******************************
 
-For Xen guest domains configuration the **zephyr-dom0-xt** application uses `zephyr-xenlib`_
-domain's configuration format defined by ``struct dom0_domain_cfg`` which includes pointer on xenlib
+For Xen guest domains configuration the **zephyr-dom0-xt** application uses domain's configuration
+format defined by ``struct dom0_domain_cfg`` which includes pointer on `zephyr-xenlib`_
 domain configuration ``struct xen_domain_cfg``.
 
 .. note::
@@ -117,20 +117,74 @@ For example Zephyr board is **rpi_5** and `CONFIG_USE_DEFAULT_DOM_CFG=n``:
 Xen guest domains binary images
 *******************************
 
-The **zephyr-dom0-xt** takes pre-built Xen guest domains images from ``prebuilt/`` folder and
+Built-in domains binary images
+==============================
+
+The **zephyr-dom0-xt** can take pre-built Xen guest domains images from ``prebuilt/`` folder and
 they are integrated directly into Zephyr **zephyr-dom0-xt**. Now only two sets of Xen guest images
 is supported which names are defined by following Kconfig options:
 
 - **CONFIG_DOM_CFG_DOMU0_IMAGE_BIN_FILE**: Location for Domain-U0 kernel binary.
   For RPI 5 it is ``zephyr_blinky.bin`` corresponding to Zephyr ``samples/basic/blinky`` sample.
 - **CONFIG_DOM_CFG_DOMU0_DTB_BIN_FILE**: Location for Domain-U0 device-tree binary.
-- **CONFIG_DOM_CFG_DOMU1_IMAGE_BIN_FILE**: Location for Domain-U1 kernel binary
+- **CONFIG_DOM_CFG_DOMU1_IMAGE_BIN_FILE**: Location for Domain-U1 kernel binary.
   For RPI 5 it is ``zephyr_sync.bin`` corresponding to Zephyr ``samples/synchronization`` sample.
-- **CONFIG_DOM_CFG_DOMU1_DTB_BIN_FILE**: "Location for Domain-U1 device-tree"
+- **CONFIG_DOM_CFG_DOMU1_DTB_BIN_FILE**: Location for Domain-U1 device-tree binary.
 
-To use custom binary images they shell be copied into ``prebuilt/`` folder.
+To use custom binary images they should be copied into ``prebuilt/`` folder.
 
-This approach is not very convenient and in todo list.
+For Domain-U1/U0 device-tree and kernel binaries special linker sections will be defined which then
+can be used in `zephyr-xenlib`_ domain configuration ``struct xen_domain_cfg`` and to implement
+.load_image_bytes()/.get_image_size() callbacks. See ``dom_cfg/rpi_5.c`` for an example.
+
+This functionality is configured by **CONFIG_DOM_CFG_BUILTIN_IMAGES** Kconfig option.
+
+
+Domains binary images on storage
+================================
+
+On **rpi_5** platform the Zephyr **zephyr-dom0-xt** supports loading guest domains
+device-tree/kernel image binaries from FATFS partition on SD-card. The **zephyr-dom0-xt** as MBR
+as GPT SD-card format.
+
+This option can be enabled using the **CONFIG_DOM_STORAGE_FATFS_ENABLE** Kconfig option.
+
+By default, the **first** physical FATFS partition is used to look up for guest domains
+device-tree/kernel image binaries in **dom0** folder.
+
+The default images folder name can be changed using **CONFIG_DOM_STORAGE_FATFS_DIR** Kconfig option.
+
+The default fs mount point is ``/SD:``.
+
+Multi FAT volume support
+------------------------
+
+The Zephyr **zephyr-dom0-xt** supports Multi FAT volumes. This feature can be enabled using
+**CONFIG_FS_MULTI_PARTITION** Kconfig option. When this option is enabled the fs mount point should
+be defined in format::
+
+    "/0:" - first physical FATFS partition
+    "/1:" - second physical FATFS partition
+    ...
+
+.. note::
+
+    if more then 2 physical FATFS partitions is used the ``PARTITION VolToPart[FF_VOLUMES]``
+    array need to be updated in s``storage.c``.
+
+The physical FATFS partition to be used is selected by
+**CONFIG_DOM_STORAGE_FATFS_LOGICAL_DRIVE_NAME** Kconfig option which is "/0:" by default - the first
+physical FATFS partition.
+
+For example, SD-card with two FATFS partitions. The second FATFS partitions is used to store
+guest domain binaries. The Kconfig configuration to be used:
+
+.. code-block:: text
+
+    CONFIG_DOM_STORAGE_FATFS_ENABLE=y
+    CONFIG_FS_MULTI_PARTITION=y
+    CONFIG_DOM_STORAGE_FATFS_LOGICAL_DRIVE_NAME="1"
+    CONFIG_DOM_STORAGE_FATFS_DIR=""
 
 Building and Running
 ********************
