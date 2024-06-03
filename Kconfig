@@ -57,6 +57,14 @@ config DOM_STORAGE_FATFS_DIR
 
 endif #DOM_STORAGE_FATFS_ENABLE
 
+config DOM_CFG_BUILTIN_IMAGES
+	bool "Use built-in guest domains kernel/device-tree images"
+	default y
+	help
+	  Use built-in guest domains kernel/device-tree images.
+
+if DOM_CFG_BUILTIN_IMAGES
+
 config DOM_CFG_DOMU0_IMAGE_BIN_FILE
 	string "Location for Domain-U0 kernel binary"
 	default "domu0_img.bin"
@@ -67,10 +75,10 @@ config DOM_CFG_DOMU0_DTB_BIN_FILE
 
 config DOM_CFG_DOMU1_IMAGE_BIN_FILE
 	string "Location for Domain-U1 kernel binary"
-	depends on DOM_CFG_NUMBER > 1
 
 config DOM_CFG_DOMU1_DTB_BIN_FILE
 	string "Location for Domain-U1 device-tree"
-	depends on DOM_CFG_NUMBER > 1
+
+endif #DOM_CFG_BUILTIN_IMAGES
 
 source "Kconfig.zephyr"

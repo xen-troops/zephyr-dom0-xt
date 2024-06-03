@@ -6,6 +6,8 @@
 
 #include <zephyr/toolchain.h>
 
+#if defined(CONFIG_DOM_CFG_BUILTIN_IMAGES)
+
 /* DomU0 binary from include/ dir */
 .section .data.domu0_img,"a"
 
@@ -51,3 +53,5 @@ __dtb_domu1_start:
 .incbin		CONFIG_DOM_CFG_DOMU1_DTB_BIN_FILE
 __dtb_domu1_end:
 #endif /* CONFIG_DOM_CFG_DOMU1_DTB_BIN_FILE */
+
+#endif /* CONFIG_DOM_CFG_BUILTIN_IMAGES */
