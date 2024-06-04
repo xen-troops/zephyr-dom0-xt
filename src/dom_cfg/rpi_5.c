@@ -14,9 +14,31 @@
  * Example Xen guest domains configuration file for "rpi_5" which contains
  * - domu_cfg_0 as DomD example which uses real HW "/soc/gpio@7d517c00" and can be used to run
  *   samples/basic/blinky sample.
- * - domu_cfg_1 as DomU, no real HW. It can be used to run any Zephyr example not accesing HW.
+ * - domu_cfg_1 as DomU, no real HW. It can be used to run any Zephyr example not accessing HW.
  *   For example samples/synchronization
+ * - domu_cfg_2 as DomU, no real HW.
+ *   The Unikernel helloworld monkey example is used as guest domain. Its supported only with
+ *   storage enabled.
  */
+
+#if defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
+static struct xen_domain_cfg domu_cfg_2 = {
+	.name = "helloworld_xen-arm64",
+	.mem_kb = 16384,
+	.flags = (XEN_DOMCTL_CDF_hvm | XEN_DOMCTL_CDF_hap),
+	.max_evtchns = 10,
+	.max_vcpus = 1,
+	.gnt_frames = 32,
+	.max_maptrack_frames = 1,
+	.gic_version = XEN_DOMCTL_CONFIG_GIC_V2,
+	.tee_type = XEN_DOMCTL_CONFIG_TEE_NONE,
+	.cmdline = "",
+
+	.load_image_bytes = storage_image_kernel_read,
+	.get_image_size = storage_image_kernel_get_size,
+
+};
+#endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 
 #if !defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
 extern char __img_domu1_start[];
@@ -148,5 +170,11 @@ struct dom0_domain_cfg domain_cfgs[] = {
 		.image_dt_path = DISK_BIN_PATH"z_sync.dtb"
 #endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 	},
+#if defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
+	{
+		.domain_cfg = &domu_cfg_2,
+		.image_kernel_path = DISK_BIN_PATH"helloworld_xen-arm64",
+	},
+#endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 	{ 0 },
 };
