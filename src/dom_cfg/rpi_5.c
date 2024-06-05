@@ -84,9 +84,6 @@ static struct xen_domain_cfg domu_cfg_1 = {
 #else
 	.load_image_bytes = storage_image_kernel_read,
 	.get_image_size = storage_image_kernel_get_size,
-
-	.image_dt_read = storage_image_dt_read,
-	.image_dt_get_size = storage_image_dt_get_size,
 #endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 };
 
@@ -148,9 +145,6 @@ static struct xen_domain_cfg domu_cfg_0 = {
 #else
 	.load_image_bytes = storage_image_kernel_read,
 	.get_image_size = storage_image_kernel_get_size,
-
-	.image_dt_read = storage_image_dt_read,
-	.image_dt_get_size = storage_image_dt_get_size,
 #endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 
 };
@@ -160,14 +154,12 @@ struct dom0_domain_cfg domain_cfgs[] = {
 		.domain_cfg = &domu_cfg_0,
 #if defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
 		.image_kernel_path = DISK_BIN_PATH"z_blinky.bin",
-		.image_dt_path = DISK_BIN_PATH"z_blinky.dtb"
 #endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 	},
 	{
 		.domain_cfg = &domu_cfg_1,
 #if defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
 		.image_kernel_path = DISK_BIN_PATH"z_sync.bin",
-		.image_dt_path = DISK_BIN_PATH"z_sync.dtb"
 #endif /* CONFIG_DOM_STORAGE_FATFS_ENABLE */
 	},
 #if defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
