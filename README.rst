@@ -197,7 +197,7 @@ For example, to build it for **rpi_5** board with one Xen guest domain configura
 
 .. code-block:: bash
 
-    west build -b rpi_5 -p always -S xen_dom0 zephyr-dom0-xt -- \
+    west build -b rpi_5 -p always zephyr-dom0-xt -- \
     -DCONFIG_USE_DEFAULT_DOM_CFG=n -DCONFIG_DOM_CFG_BOARD_EXT=\"domd\"
 
 For example, to build it for **rpi_5** board with two Xen guest domain configurations
@@ -205,7 +205,7 @@ For example, to build it for **rpi_5** board with two Xen guest domain configura
 
 .. code-block:: bash
 
-    west build -b rpi_5 -p always -S xen_dom0 zephyr-dom0-xt -- \
+    west build -b rpi_5 -p always zephyr-dom0-xt -- \
     -DCONFIG_USE_DEFAULT_DOM_CFG=n
 
 Running
@@ -253,14 +253,14 @@ Once build is finished copy ``zephyr.bin`` into the
 
     For RPI5 It's default configuration, so this step can be skipped.
 
-Build zephyr-dom0-xt
+RPI5 Build zephyr-dom0-xt
 ====================
 
 Run below command to build **zephyr-dom0-xt**:
 
 .. code-block:: bash
 
-    west build -b rpi_5 -p always -S xen_dom0 zephyr-dom0-xt
+    west build -b rpi_5 -p always zephyr-dom0-xt
 
 Once build is finished copy ``zephyr.bin`` into RPI5 ``bootfs``, so it can be picked up by
 booting process.
