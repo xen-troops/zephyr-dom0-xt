@@ -17,3 +17,6 @@ manifest:
     - name: zephyr-xenlib
       remote: xentroops
       revision: main
+    - name: zephyr-xrun
+      remote: xentroops
+      revision: main
