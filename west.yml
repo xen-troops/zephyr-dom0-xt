@@ -21,4 +21,4 @@ manifest:
       revision: 72dbdad3d141bd8fed2688597453a516b70157f6
     - name: fatfs
       remote: zephyrproject-rtos
-      revision: master
+      revision: 427159bf95ea49b7680facffaa29ad506b42709b
