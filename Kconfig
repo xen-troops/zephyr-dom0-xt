@@ -88,11 +88,17 @@ config DOM_CFG_DOMU0_DTB_BIN_FILE
 	string "Location for Domain-U0 device-tree"
 	default "domu0.dtb"
 
+config DOM_CFG_DOMU1_ENABLE
+	bool "Enable builtin Domain-U1 kernel binary"
+	default n
+
 config DOM_CFG_DOMU1_IMAGE_BIN_FILE
 	string "Location for Domain-U1 kernel binary"
+	depends on DOM_CFG_DOMU1_ENABLE
 
 config DOM_CFG_DOMU1_DTB_BIN_FILE
 	string "Location for Domain-U1 device-tree"
+	depends on DOM_CFG_DOMU1_ENABLE
 
 endif #DOM_CFG_BUILTIN_IMAGES
 
