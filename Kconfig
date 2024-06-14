@@ -102,4 +102,13 @@ config DOM_CFG_DOMU1_DTB_BIN_FILE
 
 endif #DOM_CFG_BUILTIN_IMAGES
 
+config DOM_COVERAGE_ENABLE
+	bool "Enable code coverage with GCOV"
+	depends on SHELL
+	select FORCE_COVERAGE
+	select COVERAGE
+	help
+	  Enable code coverage with GCOV and enable shell command to print GCOV
+	  dump "gcov dump" in console.
+
 source "Kconfig.zephyr"
