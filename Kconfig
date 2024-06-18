@@ -111,4 +111,29 @@ config DOM_COVERAGE_ENABLE
 	  Enable code coverage with GCOV and enable shell command to print GCOV
 	  dump "gcov dump" in console.
 
+config VCHAN_SHELL_CMDS
+	depends on SHELL
+	bool "Enable VCHAN echo server shell commands"
+	help
+	  Enable set of VCHAN echo server shell commands. All data incoming to
+	  channel created by this server will be send back. This is for test
+	  purposes. Server introduces 2 commands:
+	  vchan start [domid]
+	    Start echo server. domid - The peer domain that will be connecting
+	    (0 by default)
+	  vchan stop
+	    Stop server
+
+if VCHAN_SHELL_CMDS
+
+config VCHAN_ECHO_BUFFER_SIZE
+	int "Buffer size for echo server"
+	default 10
+
+config VCHAN_THREAD_STACK_SIZE
+	int "vchan echo server thread size"
+	default 2048
+
+endif #VCHAN_SHELL_CMDS
+
 source "Kconfig.zephyr"

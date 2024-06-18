@@ -27,3 +27,5 @@ else()
     target_sources(app PRIVATE src/dom_cfg/${BOARD}.c)
   endif()
 endif()
+
+target_sources_ifdef(CONFIG_VCHAN_SHELL_CMDS app PRIVATE src/vchan_cmds.c)

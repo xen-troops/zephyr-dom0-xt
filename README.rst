@@ -448,3 +448,33 @@ and execute the following command:
 .. code-block:: console
     ~ # ping -c 3 192.168.0.2
 
+RPI5 vchan simple echo server
+*****************************
+
+vchan echo server should be build with Kconfig configuration:
+
+.. code-block:: text
+    CONFIG_VCHAN_SHELL_CMDS=y
+
+Start echo server in zephyr console:
+
+.. code-block:: console
+    uart:~$ vchan start 1
+    Echo server openad at /local/domain/1/echo
+    Thread started
+
+On domd side vchan-node1 tool can be used to communicate with echo server. Send
+data to echo server:
+
+.. code-block:: console
+    root@raspberrypi5-domd:~# vchan-node1 client write 0 /local/domain/1/echo
+    seed=1709064173
+
+Enter data using keyboard. Stop this utility using Ctrl+C. Read data from
+server:
+
+.. code-block:: console
+    root@raspberrypi5-domd:~# vchan-node1 client read 0 /local/domain/1/echo
+    seed=1709068644
+
+Received (actually - entered early) symbols will be shown on console.
