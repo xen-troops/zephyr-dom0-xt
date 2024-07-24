@@ -33,6 +33,7 @@ static struct xen_domain_cfg domu_cfg_2 = {
 	.gic_version = XEN_DOMCTL_CONFIG_GIC_V2,
 	.tee_type = XEN_DOMCTL_CONFIG_TEE_NONE,
 	.cmdline = "",
+	.ssidref = 12,
 
 	.load_image_bytes = storage_image_kernel_read,
 	.get_image_size = storage_image_kernel_get_size,
@@ -83,6 +84,7 @@ static struct xen_domain_cfg domu_cfg_3 = {
 	.gic_version = XEN_DOMCTL_CONFIG_GIC_V2,
 	.tee_type = XEN_DOMCTL_CONFIG_TEE_NONE,
 	.cmdline = "root=/dev/ram0 rootwait console=hvc0 clk_ignore_unused",
+	.ssidref = 12,
 
 	.load_image_bytes = storage_image_kernel_read,
 	.get_image_size = storage_image_kernel_get_size,
@@ -107,6 +109,7 @@ static struct xen_domain_cfg domu_cfg_1 = {
 	.gic_version = XEN_DOMCTL_CONFIG_GIC_V2,
 	.tee_type = XEN_DOMCTL_CONFIG_TEE_NONE,
 	.cmdline = "",
+	.ssidref = 12,
 
 #if !defined(CONFIG_DOM_STORAGE_FATFS_ENABLE)
 	.load_image_bytes = load_domu_image_bytes,
@@ -162,6 +165,7 @@ static struct xen_domain_cfg domu_cfg_0 = {
 	.gic_version = XEN_DOMCTL_CONFIG_GIC_V2,
 	.tee_type = XEN_DOMCTL_CONFIG_TEE_NONE,
 	.cmdline = "",
+	.ssidref = 12,
 
 	.iomems = domd_iomems,
 	.nr_iomems = ARRAY_SIZE(domd_iomems),
