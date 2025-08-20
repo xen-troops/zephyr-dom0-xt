@@ -23,7 +23,7 @@ static struct fs_mount_t mp = {
 	.fs_data = &fat_fs,
 };
 
-#if defined(CONFIG_FS_MULTI_PARTITION)
+#if defined(CONFIG_FS_FATFS_MULTI_PARTITION)
 PARTITION VolToPart[FF_VOLUMES] = {
     [0] = {3, 1},     /* "0:" ==> 1st partition on the pd#0 */
     [1] = {3, 2},     /* "1:" ==> 2nd partition on the pd#0 */
@@ -34,7 +34,7 @@ PARTITION VolToPart[FF_VOLUMES] = {
     [6] = {0, -1},
     [7] = {0, -1},
 };
-#endif /* CONFIG_FS_MULTI_PARTITION */
+#endif /* CONFIG_FS_FATFS_MULTI_PARTITION */
 
 int storage_image_kernel_read(uint8_t *buf, size_t bufsize, uint64_t offset, void *image_info)
 {
