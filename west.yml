@@ -14,14 +14,14 @@ manifest:
   projects:
     - name: zephyr
       remote: xentroops
-      revision: zephyr-v3.6.0-xt
+      revision: f12d445f792d562f23c107379267f07674ab5ebd
       west-commands: scripts/west-commands.yml
     - name: zephyr-xenlib
       remote: xentroops
-      revision: main
+      revision: v3.2.0
     - name: fatfs
       remote: zephyrproject-rtos
       revision: 427159bf95ea49b7680facffaa29ad506b42709b
     - name: zephyr-xrun
       remote: xentroops
-      revision: main
+      revision: 5b6ecf274bac79b0be740693766a88d3eedf3b44
