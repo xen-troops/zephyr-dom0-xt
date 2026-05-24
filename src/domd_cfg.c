@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <xen/public/xen.h>
+#include <xen/public/domctl.h>
 #include <domain.h>
-#include <zephyr/xen/public/domctl.h>
 
 #include <string.h>
 
