@@ -5,7 +5,7 @@
  */
 
 #include <domain.h>
-#include <zephyr/xen/public/domctl.h>
+#include <xen/public/domctl.h>
 #include <string.h>
 #include <xl_parser.h>
 #include "../dom0.h"
